@@ -1,0 +1,80 @@
+export const mockProducts = [
+  {
+    id: 1,
+    name: "Classic White T-Shirt",
+    price: 29.99,
+    category: "shirts",
+    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop",
+    rating: 4.5,
+    reviews: 128,
+    description: "Premium cotton t-shirt with a classic fit. Perfect for everyday wear.",
+    sizes: ["XS", "S", "M", "L", "XL"],
+    colors: ["White", "Black", "Navy"],
+    inStock: true
+  },
+  {
+    id: 2,
+    name: "Denim Jacket",
+    price: 89.99,
+    category: "jackets",
+    image: "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?w=400&h=400&fit=crop",
+    rating: 4.8,
+    reviews: 89,
+    description: "Vintage-style denim jacket with a modern fit. Made from premium denim.",
+    sizes: ["S", "M", "L", "XL"],
+    colors: ["Blue", "Black", "Light Blue"],
+    inStock: true
+  },
+  {
+    id: 3,
+    name: "Summer Dress",
+    price: 59.99,
+    category: "dresses",
+    image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=400&h=400&fit=crop",
+    rating: 4.6,
+    reviews: 156,
+    description: "Flowy summer dress perfect for warm weather. Lightweight and comfortable.",
+    sizes: ["XS", "S", "M", "L"],
+    colors: ["Floral", "Solid Blue", "White"],
+    inStock: true
+  },
+  {
+    id: 4,
+    name: "Leather Boots",
+    price: 129.99,
+    category: "shoes",
+    image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop",
+    rating: 4.7,
+    reviews: 203,
+    description: "Handcrafted leather boots with superior comfort and durability.",
+    sizes: ["7", "8", "9", "10", "11", "12"],
+    colors: ["Brown", "Black", "Tan"],
+    inStock: true
+  },
+  {
+    id: 5,
+    name: "Wool Sweater",
+    price: 79.99,
+    category: "sweaters",
+    image: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=400&h=400&fit=crop",
+    rating: 4.4,
+    reviews: 92,
+    description: "Cozy wool sweater perfect for cold weather. Soft and warm.",
+    sizes: ["S", "M", "L", "XL"],
+    colors: ["Gray", "Navy", "Burgundy"],
+    inStock: false
+  },
+  {
+    id: 6,
+    name: "Casual Sneakers",
+    price: 69.99,
+    category: "shoes",
+    image: "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=400&h=400&fit=crop",
+    rating: 4.3,
+    reviews: 167,
+    description: "Comfortable casual sneakers for everyday wear. Lightweight and stylish.",
+    sizes: ["7", "8", "9", "10", "11"],
+    colors: ["White", "Black", "Gray"],
+    inStock: true
+  }
+];

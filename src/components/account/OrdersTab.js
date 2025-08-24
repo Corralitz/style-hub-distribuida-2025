@@ -1,10 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Package } from 'lucide-react';
-import { mockOrders } from '../../data';
+import { useOrders } from '../../hooks/useContentful';
 
 const OrdersTab = () => {
   const navigate = useNavigate();
+  const { orders, loading, error } = useOrders();
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -19,13 +20,33 @@ const OrdersTab = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="bg-white rounded-lg shadow p-6">
+        <div className="flex justify-center items-center h-32">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+          Error loading orders. Please try again later.
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white rounded-lg shadow">
       <div className="p-6 border-b border-gray-200">
         <h2 className="text-2xl font-bold text-gray-900">Order History</h2>
       </div>
       
-      {mockOrders.length === 0 ? (
+      {orders.length === 0 ? (
         <div className="p-6 text-center">
           <Package size={48} className="mx-auto text-gray-400 mb-4" />
           <p className="text-gray-500 text-lg">No orders yet</p>
@@ -38,11 +59,13 @@ const OrdersTab = () => {
         </div>
       ) : (
         <div className="p-6">
-          {mockOrders.map((order) => (
+          {orders.map((order) => (
             <div key={order.id} className="border border-gray-200 rounded-lg p-6 mb-4 last:mb-0">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Order #{order.id}</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    Order #{order.orderId || order.id}
+                  </h3>
                   <p className="text-sm text-gray-600">
                     Placed on {new Date(order.date).toLocaleDateString()}
                   </p>
@@ -55,17 +78,19 @@ const OrdersTab = () => {
                 </div>
               </div>
               
-              <div className="border-t border-gray-200 pt-4">
-                <h4 className="font-medium text-gray-900 mb-2">Items:</h4>
-                {order.items.map((item, index) => (
-                  <div key={index} className="flex justify-between items-center py-2">
-                    <span className="text-gray-700">{item.name} × {item.quantity}</span>
-                    <span className="font-medium text-gray-900">
-                      ${(item.price * item.quantity).toFixed(2)}
-                    </span>
-                  </div>
-                ))}
-              </div>
+              {order.products && order.products.length > 0 && (
+                <div className="border-t border-gray-200 pt-4">
+                  <h4 className="font-medium text-gray-900 mb-2">Items:</h4>
+                  {order.products.map((item, index) => (
+                    <div key={index} className="flex justify-between items-center py-2">
+                      <span className="text-gray-700">{item.name} × {item.quantity || 1}</span>
+                      <span className="font-medium text-gray-900">
+                        ${((item.price || 0) * (item.quantity || 1)).toFixed(2)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
               
               <div className="flex space-x-3 mt-4 pt-4 border-t border-gray-200">
                 <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700">

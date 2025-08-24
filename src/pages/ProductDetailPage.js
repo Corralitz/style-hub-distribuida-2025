@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart, Star, Plus, Minus } from 'lucide-react';
-import { mockProducts } from '../data';
+import { useProduct } from '../hooks/useContentful';
 
 const ProductDetailPage = ({ 
   selectedProduct, 
@@ -11,40 +11,23 @@ const ProductDetailPage = ({
 }) => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [currentProduct, setCurrentProduct] = useState(selectedProduct);
+  const { product, loading, error } = useProduct(id);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
-    // If no selectedProduct or URL id doesn't match, find product by URL id
-    if (!currentProduct || currentProduct.id !== parseInt(id)) {
-      const product = mockProducts.find(p => p.id === parseInt(id));
-      if (product) {
-        setCurrentProduct(product);
-        setSelectedProduct(product);
-        setSelectedSize(product.sizes[0]);
-        setSelectedColor(product.colors[0]);
-      } else {
-        // Product not found, redirect to browse
-        navigate('/browse');
-        return;
-      }
-    } else {
-      // Set initial size and color if not set
-      if (!selectedSize) setSelectedSize(currentProduct.sizes[0]);
-      if (!selectedColor) setSelectedColor(currentProduct.colors[0]);
+    if (product) {
+      setSelectedProduct(product);
+      setSelectedSize(product.sizes[0] || 'M');
+      setSelectedColor(product.colors[0] || 'Black');
     }
-  }, [id, currentProduct, selectedProduct, setSelectedProduct, navigate, selectedSize, selectedColor]);
-
-  if (!currentProduct) {
-    return <div className="flex justify-center items-center h-64">Loading...</div>;
-  }
+  }, [product, setSelectedProduct]);
 
   const handleAddToCart = () => {
-    if (currentProduct.inStock) {
+    if (product && product.inStock) {
       for (let i = 0; i < quantity; i++) {
-        cart.addToCart(currentProduct, selectedSize, selectedColor);
+        cart.addToCart(product, selectedSize, selectedColor);
       }
     }
   };
@@ -53,7 +36,34 @@ const ProductDetailPage = ({
     navigate('/browse');
   };
 
-  const isInWishlist = wishlist.wishlist.some(item => item.id === currentProduct.id);
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !product) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <button
+          className="flex items-center text-indigo-600 hover:text-indigo-700 mb-6"
+          onClick={handleBackToBrowse}
+        >
+          <ArrowLeft size={20} className="mr-2" />
+          Back to Products
+        </button>
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+          Product not found or error loading product details.
+        </div>
+      </div>
+    );
+  }
+
+  const isInWishlist = wishlist.wishlist.some(item => item.id === product.id);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -69,8 +79,8 @@ const ProductDetailPage = ({
         {/* Product Image */}
         <div className="relative">
           <img
-            src={currentProduct.image}
-            alt={currentProduct.name}
+            src={product.image}
+            alt={product.name}
             className="w-full h-96 lg:h-full object-cover rounded-lg"
           />
           <button
@@ -79,11 +89,11 @@ const ProductDetailPage = ({
                 ? 'bg-red-100 text-red-600'
                 : 'bg-white text-gray-400 hover:text-red-600'
             }`}
-            onClick={() => wishlist.toggleWishlist(currentProduct)}
+            onClick={() => wishlist.toggleWishlist(product)}
           >
             <Heart size={24} fill={isInWishlist ? 'currentColor' : 'none'} />
           </button>
-          {!currentProduct.inStock && (
+          {!product.inStock && (
             <div className="absolute inset-0 bg-black bg-opacity-50 rounded-lg flex items-center justify-center">
               <span className="text-white font-semibold text-xl">Out of Stock</span>
             </div>
@@ -92,7 +102,7 @@ const ProductDetailPage = ({
 
         {/* Product Info */}
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">{currentProduct.name}</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">{product.name}</h1>
           
           <div className="flex items-center mb-4">
             <div className="flex items-center">
@@ -100,22 +110,22 @@ const ProductDetailPage = ({
                 <Star
                   key={i}
                   size={20}
-                  className={i < Math.floor(currentProduct.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}
+                  className={i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}
                 />
               ))}
             </div>
-            <span className="text-gray-600 ml-2">({currentProduct.reviews} reviews)</span>
+            <span className="text-gray-600 ml-2">({product.reviews} reviews)</span>
           </div>
 
-          <p className="text-2xl font-bold text-gray-900 mb-6">${currentProduct.price}</p>
+          <p className="text-2xl font-bold text-gray-900 mb-6">${product.price}</p>
 
-          <p className="text-gray-600 mb-6">{currentProduct.description}</p>
+          <p className="text-gray-600 mb-6">{product.description}</p>
 
           {/* Size Selection */}
           <div className="mb-6">
             <h3 className="text-sm font-medium text-gray-900 mb-3">Size</h3>
             <div className="flex flex-wrap gap-2">
-              {currentProduct.sizes.map(size => (
+              {product.sizes.map(size => (
                 <button
                   key={size}
                   className={`px-4 py-2 border rounded-lg text-sm font-medium ${
@@ -135,7 +145,7 @@ const ProductDetailPage = ({
           <div className="mb-6">
             <h3 className="text-sm font-medium text-gray-900 mb-3">Color</h3>
             <div className="flex flex-wrap gap-2">
-              {currentProduct.colors.map(color => (
+              {product.colors.map(color => (
                 <button
                   key={color}
                   className={`px-4 py-2 border rounded-lg text-sm font-medium ${
@@ -176,14 +186,14 @@ const ProductDetailPage = ({
           {/* Add to Cart Button */}
           <button
             className={`w-full py-3 px-6 rounded-lg font-medium ${
-              currentProduct.inStock
+              product.inStock
                 ? 'bg-indigo-600 text-white hover:bg-indigo-700'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}
             onClick={handleAddToCart}
-            disabled={!currentProduct.inStock}
+            disabled={!product.inStock}
           >
-            {currentProduct.inStock ? 'Add to Cart' : 'Out of Stock'}
+            {product.inStock ? 'Add to Cart' : 'Out of Stock'}
           </button>
         </div>
       </div>

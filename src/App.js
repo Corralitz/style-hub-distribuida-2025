@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Header, Footer } from './components/common';
+import ErrorBoundary from './components/common/ErrorBoundary';
 import { BrowsePage, ProductDetailPage, AccountPage } from './pages';
 import { useCart, useWishlist } from './hooks';
 import { mockUser } from './data';
@@ -21,40 +22,42 @@ const App = () => {
   };
 
   return (
-    <Router>
-      <div className="min-h-screen bg-gray-50">
-        <Header 
-          cart={cart}
-          mobileMenuOpen={mobileMenuOpen}
-          setMobileMenuOpen={setMobileMenuOpen}
-        />
-        
-        <Routes>
-          <Route 
-            path="/" 
-            element={<BrowsePage {...sharedProps} />} 
+    <ErrorBoundary>
+      <Router>
+        <div className="min-h-screen bg-gray-50">
+          <Header 
+            cart={cart}
+            mobileMenuOpen={mobileMenuOpen}
+            setMobileMenuOpen={setMobileMenuOpen}
           />
-          <Route 
-            path="/browse" 
-            element={<BrowsePage {...sharedProps} />} 
-          />
-          <Route 
-            path="/product/:id" 
-            element={<ProductDetailPage {...sharedProps} selectedProduct={selectedProduct} />} 
-          />
-          <Route 
-            path="/account" 
-            element={<AccountPage {...sharedProps} />} 
-          />
-          <Route 
-            path="/account/:tab" 
-            element={<AccountPage {...sharedProps} />} 
-          />
-        </Routes>
-        
-        <Footer />
-      </div>
-    </Router>
+          
+          <Routes>
+            <Route 
+              path="/" 
+              element={<BrowsePage {...sharedProps} />} 
+            />
+            <Route 
+              path="/browse" 
+              element={<BrowsePage {...sharedProps} />} 
+            />
+            <Route 
+              path="/product/:id" 
+              element={<ProductDetailPage {...sharedProps} selectedProduct={selectedProduct} />} 
+            />
+            <Route 
+              path="/account" 
+              element={<AccountPage {...sharedProps} />} 
+            />
+            <Route 
+              path="/account/:tab" 
+              element={<AccountPage {...sharedProps} />} 
+            />
+          </Routes>
+          
+          <Footer />
+        </div>
+      </Router>
+    </ErrorBoundary>
   );
 };
 

@@ -1,13 +1,13 @@
 import React from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Search } from 'lucide-react';
-import { categories } from '../../data';
 
 const SearchAndFilters = ({ 
   searchTerm, 
   setSearchTerm, 
   selectedCategory, 
-  setSelectedCategory 
+  setSelectedCategory,
+  categories = [] 
 }) => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -52,15 +52,15 @@ const SearchAndFilters = ({
       <div className="flex flex-wrap gap-2">
         {categories.map(category => (
           <button
-            key={category}
+            key={category.id || category.slug}
             className={`px-4 py-2 rounded-full text-sm font-medium capitalize ${
-              selectedCategory === category
+              selectedCategory === (category.slug || category.name.toLowerCase())
                 ? 'bg-indigo-600 text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
-            onClick={() => handleCategoryChange(category)}
+            onClick={() => handleCategoryChange(category.slug || category.name.toLowerCase())}
           >
-            {category}
+            {category.name}
           </button>
         ))}
       </div>

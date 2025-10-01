@@ -1,26 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, Star, Plus, Minus } from 'lucide-react';
-import { useProduct } from '../hooks/useContentful';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { ArrowLeft, Heart, Star, Plus, Minus } from "lucide-react";
+import { useProduct } from "../hooks/useContentful";
+import ProductComments from "../components/ProductComments";
 
-const ProductDetailPage = ({ 
-  selectedProduct, 
+const ProductDetailPage = ({
+  selectedProduct,
   setSelectedProduct,
-  cart, 
-  wishlist 
+  cart,
+  wishlist,
 }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { product, loading, error } = useProduct(id);
-  const [selectedSize, setSelectedSize] = useState('');
-  const [selectedColor, setSelectedColor] = useState('');
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     if (product) {
       setSelectedProduct(product);
-      setSelectedSize(product.sizes[0] || 'M');
-      setSelectedColor(product.colors[0] || 'Black');
+      setSelectedSize(product.sizes[0] || "M");
+      setSelectedColor(product.colors[0] || "Black");
     }
   }, [product, setSelectedProduct]);
 
@@ -33,7 +34,7 @@ const ProductDetailPage = ({
   };
 
   const handleBackToBrowse = () => {
-    navigate('/browse');
+    navigate("/browse");
   };
 
   if (loading) {
@@ -63,7 +64,7 @@ const ProductDetailPage = ({
     );
   }
 
-  const isInWishlist = wishlist.wishlist.some(item => item.id === product.id);
+  const isInWishlist = wishlist.wishlist.some((item) => item.id === product.id);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -86,38 +87,50 @@ const ProductDetailPage = ({
           <button
             className={`absolute top-4 right-4 p-3 rounded-full ${
               isInWishlist
-                ? 'bg-red-100 text-red-600'
-                : 'bg-white text-gray-400 hover:text-red-600'
+                ? "bg-red-100 text-red-600"
+                : "bg-white text-gray-400 hover:text-red-600"
             }`}
             onClick={() => wishlist.toggleWishlist(product)}
           >
-            <Heart size={24} fill={isInWishlist ? 'currentColor' : 'none'} />
+            <Heart size={24} fill={isInWishlist ? "currentColor" : "none"} />
           </button>
           {!product.inStock && (
             <div className="absolute inset-0 bg-black bg-opacity-50 rounded-lg flex items-center justify-center">
-              <span className="text-white font-semibold text-xl">Out of Stock</span>
+              <span className="text-white font-semibold text-xl">
+                Out of Stock
+              </span>
             </div>
           )}
         </div>
 
         {/* Product Info */}
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">{product.name}</h1>
-          
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            {product.name}
+          </h1>
+
           <div className="flex items-center mb-4">
             <div className="flex items-center">
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
                   size={20}
-                  className={i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}
+                  className={
+                    i < Math.floor(product.rating)
+                      ? "text-yellow-400 fill-current"
+                      : "text-gray-300"
+                  }
                 />
               ))}
             </div>
-            <span className="text-gray-600 ml-2">({product.reviews} reviews)</span>
+            <span className="text-gray-600 ml-2">
+              ({product.reviews} reviews)
+            </span>
           </div>
 
-          <p className="text-2xl font-bold text-gray-900 mb-6">${product.price}</p>
+          <p className="text-2xl font-bold text-gray-900 mb-6">
+            ${product.price}
+          </p>
 
           <p className="text-gray-600 mb-6">{product.description}</p>
 
@@ -125,13 +138,13 @@ const ProductDetailPage = ({
           <div className="mb-6">
             <h3 className="text-sm font-medium text-gray-900 mb-3">Size</h3>
             <div className="flex flex-wrap gap-2">
-              {product.sizes.map(size => (
+              {product.sizes.map((size) => (
                 <button
                   key={size}
                   className={`px-4 py-2 border rounded-lg text-sm font-medium ${
                     selectedSize === size
-                      ? 'border-indigo-600 bg-indigo-50 text-indigo-600'
-                      : 'border-gray-300 text-gray-700 hover:border-gray-400'
+                      ? "border-indigo-600 bg-indigo-50 text-indigo-600"
+                      : "border-gray-300 text-gray-700 hover:border-gray-400"
                   }`}
                   onClick={() => setSelectedSize(size)}
                 >
@@ -145,13 +158,13 @@ const ProductDetailPage = ({
           <div className="mb-6">
             <h3 className="text-sm font-medium text-gray-900 mb-3">Color</h3>
             <div className="flex flex-wrap gap-2">
-              {product.colors.map(color => (
+              {product.colors.map((color) => (
                 <button
                   key={color}
                   className={`px-4 py-2 border rounded-lg text-sm font-medium ${
                     selectedColor === color
-                      ? 'border-indigo-600 bg-indigo-50 text-indigo-600'
-                      : 'border-gray-300 text-gray-700 hover:border-gray-400'
+                      ? "border-indigo-600 bg-indigo-50 text-indigo-600"
+                      : "border-gray-300 text-gray-700 hover:border-gray-400"
                   }`}
                   onClick={() => setSelectedColor(color)}
                 >
@@ -187,16 +200,17 @@ const ProductDetailPage = ({
           <button
             className={`w-full py-3 px-6 rounded-lg font-medium ${
               product.inStock
-                ? 'bg-indigo-600 text-white hover:bg-indigo-700'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                ? "bg-indigo-600 text-white hover:bg-indigo-700"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
             onClick={handleAddToCart}
             disabled={!product.inStock}
           >
-            {product.inStock ? 'Add to Cart' : 'Out of Stock'}
+            {product.inStock ? "Add to Cart" : "Out of Stock"}
           </button>
         </div>
       </div>
+      <ProductComments productId={product.id} />
     </div>
   );
 };

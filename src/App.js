@@ -5,6 +5,7 @@ import ErrorBoundary from "./components/common/ErrorBoundary";
 import { BrowsePage, ProductDetailPage, AccountPage } from "./pages";
 import { useCart, useWishlist } from "./hooks";
 import { mockUser } from "./data";
+import AIChatBot from "./components/AIChatBot";
 
 const App = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -51,6 +52,7 @@ const App = () => {
           </Routes>
 
           <Footer />
+          <AIChatBot />
         </div>
       </Router>
     </ErrorBoundary>

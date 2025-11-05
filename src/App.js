@@ -7,6 +7,8 @@ import { useCart, useWishlist } from "./hooks";
 import { mockUser } from "./data";
 import AIChatBot from "./components/AIChatBot";
 
+import PaymentPortalPage from "./pages/PaymentPortalPage";
+
 const App = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -26,33 +28,52 @@ const App = () => {
     <ErrorBoundary>
       <Router>
         <div className="min-h-screen bg-gray-50">
-          <Header
-            cart={cart}
-            mobileMenuOpen={mobileMenuOpen}
-            setMobileMenuOpen={setMobileMenuOpen}
-          />
-
           <Routes>
-            <Route path="/" element={<BrowsePage {...sharedProps} />} />
-            <Route path="/browse" element={<BrowsePage {...sharedProps} />} />
+            {/* Payment Portal Route - No Header/Footer */}
+            <Route path="/payment-portal" element={<PaymentPortalPage />} />
+
+            {/* Regular Routes with Header/Footer */}
             <Route
-              path="/product/:id"
+              path="/*"
               element={
-                <ProductDetailPage
-                  {...sharedProps}
-                  selectedProduct={selectedProduct}
-                />
+                <>
+                  <Header
+                    cart={cart}
+                    mobileMenuOpen={mobileMenuOpen}
+                    setMobileMenuOpen={setMobileMenuOpen}
+                  />
+
+                  <Routes>
+                    <Route path="/" element={<BrowsePage {...sharedProps} />} />
+                    <Route
+                      path="/browse"
+                      element={<BrowsePage {...sharedProps} />}
+                    />
+                    <Route
+                      path="/product/:id"
+                      element={
+                        <ProductDetailPage
+                          {...sharedProps}
+                          selectedProduct={selectedProduct}
+                        />
+                      }
+                    />
+                    <Route
+                      path="/account"
+                      element={<AccountPage {...sharedProps} />}
+                    />
+                    <Route
+                      path="/account/:tab"
+                      element={<AccountPage {...sharedProps} />}
+                    />
+                  </Routes>
+
+                  <Footer />
+                  <AIChatBot />
+                </>
               }
             />
-            <Route path="/account" element={<AccountPage {...sharedProps} />} />
-            <Route
-              path="/account/:tab"
-              element={<AccountPage {...sharedProps} />}
-            />
           </Routes>
-
-          <Footer />
-          <AIChatBot />
         </div>
       </Router>
     </ErrorBoundary>

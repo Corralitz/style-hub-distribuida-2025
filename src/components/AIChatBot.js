@@ -83,6 +83,7 @@ const AIChatBot = () => {
       });
 
       const data = await response.json();
+      console.log(data);
 
       const assistantMessage = {
         id: Date.now() + 1,
@@ -90,6 +91,8 @@ const AIChatBot = () => {
         content:
           data.output ||
           data.message ||
+          data.mensaje ||
+          data.response ||
           "Sorry, I could not process your request.",
         timestamp: new Date().toISOString(),
       };
